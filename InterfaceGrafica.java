@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -77,8 +79,8 @@ public class InterfaceGrafica extends JFrame {
 
         JPanel painelQuadrado = new JPanel();
         painelQuadrado.setLayout(new GridLayout(5, 1));
-        painelQuadrado.setBorder(BorderFactory.createLoweredBevelBorder());
-        painelQuadrado.setBounds(20,480,350,200);
+        painelQuadrado.setBorder(BorderFactory.createRaisedBevelBorder());
+        painelQuadrado.setBounds(20,480,410,200);
 
         letrasAdivinhadas = new JLabel("Palavra: " + jogo.getPalavra().getLetrasAdvinhadas().toString(), JLabel.CENTER);
         letrasAdivinhadas.setFont(new Font("Tahoma", Font.BOLD,  18));
@@ -87,7 +89,7 @@ public class InterfaceGrafica extends JFrame {
         dica.setFont(new Font("Tahoma", Font.ITALIC,  15));
 
 
-        letrasEscolhidas = new JLabel("Letras já escolhidas:", JLabel.CENTER);
+        letrasEscolhidas = new JLabel("Letras escolhidas:", JLabel.CENTER);
         letrasEscolhidas.setFont(new Font("Tahoma", Font.BOLD,  15));
 
         vetorLetras = new JLabel(jogo.getLetrasEscolhidasFormatadas(), JLabel.CENTER);
@@ -105,7 +107,7 @@ public class InterfaceGrafica extends JFrame {
         painelJogo.add(painelQuadrado);
 
         JPanel painelBotoes = criarPainelBotoes();
-        painelBotoes.setBounds(440,500,555,180);
+        painelBotoes.setBounds(550,472,410,210);
         painelJogo.add(painelBotoes);
 
         setContentPane(painelJogo);
@@ -119,16 +121,19 @@ public class InterfaceGrafica extends JFrame {
     public JPanel criarPainelBotoes() {
         JPanel painelQuadrado = new JPanel();
         painelQuadrado.setLayout(null); // Use null layout for custom positioning
-        painelQuadrado.setBorder(BorderFactory.createLoweredBevelBorder());
         painelQuadrado.setBounds(0, 240, 500, 300); // Adjust the size as needed
 
-        JLabel letra = new JLabel("Escolha uma letra: ", JLabel.CENTER);
-        letra.setFont(new Font("Tahoma", Font.BOLD, 18));
-        letra.setBounds(0, 0, 500, 30); // Adjust the size as needed
-        painelQuadrado.add(letra);
+        Border border = BorderFactory.createRaisedBevelBorder();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(border, "Escolha uma Letra");
+        titledBorder.setTitleJustification(TitledBorder.CENTER); // Centraliza o título
+        titledBorder.setTitleFont(new Font("Tahoma", Font.BOLD, 18));
+        titledBorder.setTitleColor(Color.ORANGE);
+        titledBorder.setTitlePosition(TitledBorder.TOP); // Coloca o título no topo
+        painelQuadrado.setBorder(titledBorder);
 
-        Dimension buttonSize = new Dimension(50, 30);
-        int x = 4, y = 40; // Start y position below the label
+
+        Dimension buttonSize = new Dimension(45, 25);
+        int x = 7, y = 40; // Start y position below the label
 
         for (char letraChar = 'A'; letraChar <= 'Z'; letraChar++) {
             JButton botaoLetra = new JButton(String.valueOf(letraChar));
@@ -138,7 +143,7 @@ public class InterfaceGrafica extends JFrame {
             botaoLetra.setBackground(Color.LIGHT_GRAY);
             botaoLetra.setForeground(Color.BLACK);
             botaoLetra.setFont(new Font("Arial", Font.BOLD, 14));
-            botaoLetra.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+            botaoLetra.setBorder(BorderFactory.createEtchedBorder(Color.BLACK, Color.LIGHT_GRAY));
 
             botaoLetra.addActionListener(new ActionListener() {
                 @Override
@@ -151,9 +156,9 @@ public class InterfaceGrafica extends JFrame {
             painelQuadrado.add(botaoLetra);
 
             x += buttonSize.width + 5;
-            if (x >= 500) { // Adjust the width as needed
-                x = 4;
-                y += buttonSize.height + 5;
+            if (x >= 400) { // Adjust the width as needed
+                x = 7;
+                y += buttonSize.height + 15;
             }
         }
 
