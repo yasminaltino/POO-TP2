@@ -1,12 +1,16 @@
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.Font;
-import java.util.Locale;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.BevelBorder;
+import java.io.IOException;
 
 public class InterfaceGrafica extends JFrame {
     // Declaração dos componentes
@@ -18,18 +22,36 @@ public class InterfaceGrafica extends JFrame {
     private JLabel letrasEscolhidas;
     private JLabel tentativasRestantes;
     private JLabel vetorLetras;
-    private Jogo jogo;
-
-
+    private JLabel imageLabel;
+    private Jogo jogo, jogadorUmDados;
+    private int maxTentativas;
+    private boolean versus;
+    private int statusVersus;
 
     // Construtor da classe
-    public InterfaceGrafica(Jogo jogo) {
+    public InterfaceGrafica(Jogo jogo, Jogo jogador2) {
         this.jogo = jogo;
+        this.jogadorUmDados = jogador2;
+        this.maxTentativas = jogo.getNumTentativas();
         // Configura o JFrame
         setTitle("Jogo da forca");
-        setSize(1000, 700);
+        setSize(1000, 760);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centraliza a janela na tela
+        setResizable(false);
+
+        // Add a WindowListener to handle the close event
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int response = JOptionPane.showConfirmDialog(InterfaceGrafica.this, "Deseja salvar o jogo antes de sair?", "Confirmar", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (response == JOptionPane.YES_OPTION) {
+                    jogo.salvarJogo("savegame.dat"); // Specify your save path
+                }
+                // Optionally, handle NO_OPTION and CANCEL_OPTION here
+                dispose(); // Close the application
+            }
+        });
 
         // Inicializa os componentes
         mostrarTelaInicial();
@@ -46,20 +68,60 @@ public class InterfaceGrafica extends JFrame {
         titulo.setBounds(170, 100, 800, 100);
 
         // Painel intermediário para o botão
-        JButton botaoComeco = new JButton("Começar jogo");
-        botaoComeco.setFont(new Font("Tahoma", Font.BOLD, 15));
-        botaoComeco.setBounds(400, 200, 180, 50);
 
-        botaoComeco.addActionListener(new ActionListener() {
+        JButton botao1jogador = new JButton("1 jogador");
+        botao1jogador.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botao1jogador.setBounds(400, 200, 180, 50);
+
+        botao1jogador.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Botao começo");
-                mostrarTelaJogo();
+                System.out.println("1 jogador");
+                setVersus(false);
+                setStatusVersus(1);
+                mostrarTelaEntradaNome();
             }
         });
 
+        JButton botao2jogadores = new JButton("2 jogadores");
+        botao2jogadores.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botao2jogadores.setBounds(400, 300, 180, 50);
+
+        botao2jogadores.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("2 jogadores");
+                setVersus(true);
+                setStatusVersus(1);
+                mostrarTelaEntradaNome();
+            }
+        });
+
+        JButton botaoContinuar = new JButton("Continuar jogo");
+        botaoContinuar.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botaoContinuar.setBounds(400, 400, 180, 50);
+
+        botaoContinuar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Continuar jogo");
+                try{
+                    jogo.carregarJogo("savegame.dat");
+                } catch (IOException ex){
+                    System.out.println("Nenhum jogo salvo encontrado.");
+                    jogo = new Jogo();
+                    jogo.iniciarNovoJogo();
+                }
+                jogo.setJogoSalvo(true);
+                mostrarTelaJogo(); //Vai direto para o jogo
+            }
+        });
+
+        // Adiciona os componentes ao painel
         painelInicial.add(titulo);
-        painelInicial.add(botaoComeco);
+        painelInicial.add(botao1jogador);
+        painelInicial.add(botao2jogadores);
+        painelInicial.add(botaoContinuar);
 
         setContentPane(painelInicial);
         painelInicial.setVisible(true);
@@ -67,15 +129,72 @@ public class InterfaceGrafica extends JFrame {
         repaint();
     }
 
+    public void mostrarTelaEntradaNome(){
+        painelJogo = new JPanel();
+        painelJogo.setLayout(null);
+
+        JPanel painelEntrada = new JPanel();
+        painelEntrada.setLayout(null);
+        painelEntrada.setBounds(300, 300, 400, 300);
+
+        JLabel labelEntrada = new JLabel();
+        if (!getVersus()) {
+            labelEntrada.setText("Digite o seu nome: ");
+        }else{
+            labelEntrada.setText("<html><div style='text-align: center;'> Digite o nome de quem irá <br> descobrir a palavra: </html>");
+        }
+        labelEntrada.setFont(new Font("Tahoma", Font.BOLD, 18));
+        labelEntrada.setBounds(0, 0, 400, 60);
+        labelEntrada.setHorizontalAlignment(SwingConstants.CENTER);
+        painelEntrada.add(labelEntrada);
+
+        JTextField campoEntrada = new JTextField();
+        campoEntrada.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        campoEntrada.setBounds(0, 70, 400, 30);
+        painelEntrada.add(campoEntrada);
+
+        JButton botaoConfirmar = new JButton("Confirmar nome");
+        botaoConfirmar.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botaoConfirmar.setBounds(100, 120, 180, 50);
+        botaoConfirmar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.printf("Botão confirmar nome %d\n", getStatusVersus());
+
+                jogo.setNomeJogador(campoEntrada.getText());
+
+                if(getVersus() && getStatusVersus() == 1 || getStatusVersus() == 2){
+                    mostrarTelaEscolhaPalavra();
+                } else if (!getVersus()) {
+                    mostrarTelaJogo();
+                }
+            }
+        });
+
+        painelEntrada.add(botaoConfirmar);
+
+        painelJogo.add(painelEntrada);
+
+        setContentPane(painelJogo);
+        painelJogo.setVisible(true);
+        revalidate();
+    }
+
     public void mostrarTelaJogo(){
         painelJogo = new JPanel();
         painelJogo.setLayout(null);
 
         // Load the image
-        ImageIcon imageIcon = new ImageIcon("/home/yasmin/Documentos/24.1/POO/Trabalhos/POOTP2/forca.png"); // Adjust the path to your image
-        JLabel imageLabel = new JLabel(imageIcon);
-        imageLabel.setBounds(100, 100, imageIcon.getIconWidth(), imageIcon.getIconHeight()); // Adjust the position and size as needed
-        painelJogo.add(imageLabel);
+        // Painel para a imagem da forca
+        JPanel imagePanel = new JPanel();
+        imagePanel.setBounds(100, 100, 300, 300);
+        imagePanel.setBackground(Color.LIGHT_GRAY);
+        imagePanel.setOpaque(true);
+
+        imageLabel = new JLabel();
+        atualizarImagem();
+        imagePanel.add(imageLabel);
+        painelJogo.add(imagePanel);
 
         JPanel painelQuadrado = new JPanel();
         painelQuadrado.setLayout(new GridLayout(5, 1));
@@ -87,7 +206,6 @@ public class InterfaceGrafica extends JFrame {
 
         dica = new JLabel("Dica: " + jogo.getPalavra().getTema(), JLabel.CENTER);
         dica.setFont(new Font("Tahoma", Font.ITALIC,  15));
-
 
         letrasEscolhidas = new JLabel("Letras escolhidas:", JLabel.CENTER);
         letrasEscolhidas.setFont(new Font("Tahoma", Font.BOLD,  15));
@@ -107,15 +225,68 @@ public class InterfaceGrafica extends JFrame {
         painelJogo.add(painelQuadrado);
 
         JPanel painelBotoes = criarPainelBotoes();
+        if(jogo.getJogoSalvo()){
+            for(int i = 0; i < jogo.getLetrasEscolhidas().size(); i++){
+/////////////////////////////////////////////////////////////////////////////////
+            }
+        }
         painelBotoes.setBounds(550,472,410,210);
         painelJogo.add(painelBotoes);
 
         setContentPane(painelJogo);
         painelJogo.setVisible(true);
         revalidate();
+    }
+
+    public void mostrarTelaEscolhaPalavra() {
+        painelJogo = new JPanel();
+        painelJogo.setLayout(null);
+
+        JPanel painelEntrada = new JPanel();
+        painelEntrada.setLayout(null);
+        painelEntrada.setBounds(300, 300, 400, 200);
+
+        JLabel labelEntrada = new JLabel("Digite a palavra secreta: ");
+        labelEntrada.setFont(new Font("Tahoma", Font.BOLD, 18));
+        labelEntrada.setBounds(0, 0, 400, 30);
+        painelEntrada.add(labelEntrada);
+
+        JTextField campoEntrada = new JTextField();
+        campoEntrada.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        campoEntrada.setBounds(0, 40, 400, 30);
+        painelEntrada.add(campoEntrada);
+
+        JButton botaoConfirmar = new JButton("Confirmar");
+        botaoConfirmar.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botaoConfirmar.setBounds(100, 90, 180, 50);
+        botaoConfirmar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Botão confirmar");
+
+                String palavra;
+                palavra = campoEntrada.getText().toUpperCase();
+                if(palavra.length() < 8){
+                    JOptionPane.showMessageDialog(null, "A palavra deve ter no mínimo 8 letras!", "", JOptionPane.ERROR_MESSAGE);
+                    campoEntrada.setText("");
+                    mostrarTelaEscolhaPalavra();
+                }else{
+                    jogo.getPalavra().setPalavra(palavra);
+                    jogo.getPalavra().atualizaLabelLetrasAdvinhadas();
+                    mostrarTelaJogo();
+                }
+
+            }
+        });
 
 
+        painelEntrada.add(botaoConfirmar);
+        painelJogo.add(painelEntrada);
 
+        setContentPane(painelJogo);
+        painelJogo.setVisible(true);
+
+        revalidate();
     }
 
     public JPanel criarPainelBotoes() {
@@ -130,7 +301,6 @@ public class InterfaceGrafica extends JFrame {
         titledBorder.setTitleColor(Color.ORANGE);
         titledBorder.setTitlePosition(TitledBorder.TOP); // Coloca o título no topo
         painelQuadrado.setBorder(titledBorder);
-
 
         Dimension buttonSize = new Dimension(45, 25);
         int x = 7, y = 40; // Start y position below the label
@@ -175,25 +345,56 @@ public class InterfaceGrafica extends JFrame {
         vetorLetras.setText(jogo.getLetrasEscolhidasFormatadas());
 
         acertou = jogo.adivinharLetra(letra);
-        if(!acertou){
+
+        if (!acertou) {
             jogo.setNumTentativas(jogo.getNumTentativas() - 1);
         }
 
         tentativasRestantes.setText("Tentativas restantes: " + jogo.getNumTentativas());
+        atualizarImagem();
 
         letrasAdivinhadas.setText("Palavra: " + jogo.getPalavra().getLetrasAdvinhadas().toString());
 
-        if(jogo.getNumTentativas() == 0 || jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length())
+        if (jogo.getNumTentativas() == 0 || jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length() && !getVersus()) {
+            // salvar dados do jogador sozinho aqui
             mostrarTelaFinal();
+        } else if (getVersus() && jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length() && getStatusVersus() == 1) {
+            // salvar dados do jogador 1 aq
+            Jogo tmp = jogo;
+            jogo = jogadorUmDados;
+            jogadorUmDados = tmp;
+            setStatusVersus(getStatusVersus() + 1);
+            jogo.iniciarNovoJogo();
+            mostrarTelaEntradaNome();
+        }else if(jogo.getNumTentativas() == 0 && getVersus() && getStatusVersus() > 1 || jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length()){
+            // salvar dados do jogador 2 aq
+            mostrarTelaFinal();
+        }
     }
 
+
+
     public void mostrarTelaFinal(){
+
         painelFinal = new JPanel();
         painelFinal.setLayout(null);
 
+        // Painel para a imagem 1
+        JPanel imagePanel = new JPanel();
+        imagePanel.setBounds(100, 100, 300, 300);
+        imagePanel.setBackground(Color.LIGHT_GRAY);
+        imagePanel.setOpaque(true);
+
+        imageLabel = new JLabel();
+        imagePanel.add(imageLabel);
+
+        painelFinal.add(imagePanel);
+        atualizarImagem();
+
+
         JLabel resultado = new JLabel();
         resultado.setFont(new Font("Tahoma", Font.BOLD,  30));
-        resultado.setBounds(300, 100, 800, 100);
+        resultado.setBounds(300, 10, 800, 100);
 
         if(jogo.getNumTentativas() > 0){
             resultado.setText("Parabéns, você venceu!");
@@ -203,11 +404,13 @@ public class InterfaceGrafica extends JFrame {
             jogo.setNumDerrotas(jogo.getNumDerrotas() + 1);
         }
 
-        painelFinal.add(resultado);
+        if(!getVersus()){
+            painelFinal.add(resultado);
+        }
 
         JButton recomecar = new JButton("Jogar Novamente");
         recomecar.setFont(new Font("Tahoma", Font.BOLD, 15));
-        recomecar.setBounds(400, 200, 180, 50);
+        recomecar.setBounds(420, 450, 180, 50);
 
         recomecar.addActionListener(new ActionListener() {
             @Override
@@ -222,7 +425,7 @@ public class InterfaceGrafica extends JFrame {
 
         JButton sair = new JButton("Sair");
         sair.setFont(new Font("Tahoma", Font.BOLD, 15));
-        sair.setBounds(400, 300, 180, 50);
+        sair.setBounds(420, 550, 180, 50);
 
         sair.addActionListener(new ActionListener() {
             @Override
@@ -234,24 +437,123 @@ public class InterfaceGrafica extends JFrame {
 
         painelFinal.add(sair);
 
+
+        JPanel painelEstatisticas = new JPanel();
+        painelEstatisticas.setLayout(null);
+        painelEstatisticas.setBounds(100, 450, 850, 200);
+        JLabel labelEstatisticas = new JLabel("", JLabel.CENTER);
+
+        // definindo bordas para o compoundBorder
+        Border bevelBorder = new BevelBorder(BevelBorder.LOWERED);
+        Border paddingBorder = new EmptyBorder(10, 10, 10, 10);
+        if(!getVersus()){
+            labelEstatisticas = new JLabel("", JLabel.CENTER);
+            labelEstatisticas.setFont(new Font("Tahoma", Font.BOLD, 18));
+            labelEstatisticas.setBounds(0, 0, 250, 200);
+            labelEstatisticas.setBorder(new CompoundBorder(bevelBorder, paddingBorder));
+            String venceu = jogo.getNumTentativas() > 0 ? "Venceu" : "Perdeu";
+            labelEstatisticas.setText("<html><span style='font-size:18px;'>Estatísticas</span><br>" +
+                    "Jogador: " + jogo.getNomeJogador() + "<br>" +
+                    "Tentativas restantes: " + (jogo.getNumTentativas()) + "<br>" +
+                    "Letras acertadas: " + jogo.getNumAcertos() + "<br>" +
+                    "Palavra: " + jogo.getPalavra().getPalavra() + "</html>");
+        }
+
+
+        if(getVersus()){
+            JLabel labelEstatisticas2 = new JLabel("", JLabel.CENTER);
+            labelEstatisticas2.setFont(new Font("Tahoma", Font.BOLD,  18));
+            labelEstatisticas2.setBounds(0,0, 250, 200);
+            labelEstatisticas2.setBorder(new CompoundBorder(bevelBorder, paddingBorder));
+            String venceu = jogo.getNumTentativas() > 0 ? "Venceu" : "Perdeu";
+            labelEstatisticas2.setText("<html><span style='font-size:18px;'> " + venceu +" </span><br>" +
+                    "Jogador: " + jogadorUmDados.getNomeJogador() + "<br>" +
+                    "Tentativas restantes: " + (jogadorUmDados.getNumTentativas() ) + "<br>" +
+                    "Letras acertadas: " + jogadorUmDados.getNumAcertos() + "<br>" +
+                    "Palavra: " + jogadorUmDados.getPalavra().getPalavra() + "</html>");
+            painelEstatisticas.add(labelEstatisticas2);
+
+            labelEstatisticas = new JLabel("", JLabel.CENTER);
+            labelEstatisticas.setFont(new Font("Tahoma", Font.BOLD, 18));
+            labelEstatisticas.setBounds(550, 0, 250, 200);
+            labelEstatisticas.setBorder(new CompoundBorder(bevelBorder, paddingBorder));
+            venceu = jogo.getNumTentativas() > 0 ? "Venceu" : "Perdeu";
+            labelEstatisticas.setText("<html><span style='font-size:18px;'> " + venceu +" </span><br>" +
+                    "Jogador: " + jogo.getNomeJogador() + "<br>" +
+                    "Tentativas restantes: " + (jogo.getNumTentativas()) + "<br>" +
+                    "Letras acertadas: " + jogo.getNumAcertos() + "<br>" +
+                    "Palavra: " + jogo.getPalavra().getPalavra() + "</html>");
+        }
+
+        painelEstatisticas.add(labelEstatisticas);
+        painelFinal.add(painelEstatisticas);
+
         setContentPane(painelFinal);
         painelFinal.setVisible(true);
         revalidate();
-
-
     }
 
+    public void atualizarImagem() {
+        String imagePath;
+        System.out.printf("Tentativas: %d\n MaxTentativas: %d", jogo.getNumTentativas() , maxTentativas);
+        imagePath = "media/forca" + (jogo.getNumTentativas() + 1) + ".jpeg";
 
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image originalImage = originalIcon.getImage();
+
+        int newWidth = 300;
+        int newHeight = (originalIcon.getIconHeight() * newWidth) / originalIcon.getIconWidth();
+        Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        imageLabel.setIcon(scaledIcon);
+    }
+
+//    public void salvarJogo(String nomeArquivo) {
+//        try (FileOutputStream fos = new FileOutputStream(nomeArquivo);
+//             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+//            oos.writeObject(this);  // 'this' refers to the current Jogo object
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public static Jogo carregarJogo(String nomeArquivo) {
+//        try (FileInputStream fis = new FileInputStream(nomeArquivo);
+//             ObjectInputStream ois = new ObjectInputStream(fis)) {
+//            return (Jogo) ois.readObject();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+    public void setVersus(boolean versus){
+        this.versus = versus;
+    }
+
+    public boolean getVersus(){
+        return versus;
+    }
+
+    public int getStatusVersus() {
+        return statusVersus;
+    }
+
+    public void setStatusVersus(int statusVersus) {
+        this.statusVersus = statusVersus;
+    }
 
     // Método principal para executar a aplicação
     public static void main(String[] args) {
         Jogo jogo = new Jogo();
+        Jogo jogador2 = new Jogo();
         jogo.iniciarNovoJogo();
         // Garante que a GUI será criada no event-dispatching thread
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new InterfaceGrafica(jogo).setVisible(true);
+                new InterfaceGrafica(jogo, jogador2).setVisible(true);
             }
         });
     }

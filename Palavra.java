@@ -1,8 +1,8 @@
-
 import java.util.ArrayList;
 import java.util.Collections;
+import java.io.Serializable;
 
-public class Palavra {
+public class Palavra implements Serializable{
     private String palavra;
     private String tema;
     private ArrayList<Character> letrasAdvinhadas;
@@ -11,12 +11,15 @@ public class Palavra {
         letrasAdvinhadas = new ArrayList<>();
     }
 
-
     public Palavra(String palavra, String tema) {
         this.palavra = palavra;
         this.tema = tema;
-        this.letrasAdvinhadas = new ArrayList<>(Collections.nCopies(palavra.length(), '_'));
+        atualizaLabelLetrasAdvinhadas();
 
+    }
+
+    public void atualizaLabelLetrasAdvinhadas(){
+        this.letrasAdvinhadas = new ArrayList<>(Collections.nCopies(palavra.length(), '_'));
     }
 
     public String getPalavra() {
