@@ -28,7 +28,7 @@ public class InterfaceGrafica extends JFrame {
     private boolean versus;
     private int statusVersus;
 
-    // Construtor da classe
+    // Construtor da classee
     public InterfaceGrafica(Jogo jogo, Jogo jogador2) {
         this.jogo = jogo;
         this.jogadorUmDados = jogador2;

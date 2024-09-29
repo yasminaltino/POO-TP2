@@ -46,3 +46,4 @@ public class Palavra implements Serializable{
         this.letrasAdvinhadas = letrasAdvinhadas;
     }
 }
+//d

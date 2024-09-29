@@ -57,7 +57,7 @@ public class Jogo implements Serializable{
         this.palavra = palavra;
     }
 
-//    public Forca getForca() {
+//    public Forca getForca() {s
 //        return forca;
 //    }
 
