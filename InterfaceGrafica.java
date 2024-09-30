@@ -113,7 +113,6 @@ public class InterfaceGrafica extends JFrame {
                     jogo.iniciarNovoJogo();
                 }
                 jogo.setJogoSalvo(true);
-                criarPainelBotoes();
                 mostrarTelaJogo(); //Vai direto para o jogo
             }
         });
