@@ -113,6 +113,7 @@ public class InterfaceGrafica extends JFrame {
                     jogo.iniciarNovoJogo();
                 }
                 jogo.setJogoSalvo(true);
+                criarPainelBotoes();
                 mostrarTelaJogo(); //Vai direto para o jogo
             }
         });
@@ -308,6 +309,14 @@ public class InterfaceGrafica extends JFrame {
         for (char letraChar = 'A'; letraChar <= 'Z'; letraChar++) {
             JButton botaoLetra = new JButton(String.valueOf(letraChar));
             botaoLetra.setBounds(x, y, buttonSize.width, buttonSize.height);
+
+            if(jogo.getJogoSalvo()){
+                for(Character c : jogo.getLetrasEscolhidas()){
+                    if(c == letraChar){
+                        botaoLetra.setEnabled(false);
+                    }
+                }
+            }
 
             // Customize button appearance
             botaoLetra.setBackground(Color.LIGHT_GRAY);
@@ -509,24 +518,6 @@ public class InterfaceGrafica extends JFrame {
         imageLabel.setIcon(scaledIcon);
     }
 
-//    public void salvarJogo(String nomeArquivo) {
-//        try (FileOutputStream fos = new FileOutputStream(nomeArquivo);
-//             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-//            oos.writeObject(this);  // 'this' refers to the current Jogo object
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public static Jogo carregarJogo(String nomeArquivo) {
-//        try (FileInputStream fis = new FileInputStream(nomeArquivo);
-//             ObjectInputStream ois = new ObjectInputStream(fis)) {
-//            return (Jogo) ois.readObject();
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
 
     public void setVersus(boolean versus){
         this.versus = versus;
