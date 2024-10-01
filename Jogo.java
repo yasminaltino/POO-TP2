@@ -138,6 +138,7 @@ public class Jogo implements Serializable{
     public void salvarJogo(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             // Serialize game state
+        	oos.writeObject(nomeJogador);
             oos.writeInt(numTentativas);
             oos.writeObject(palavra);
 //            oos.writeObject(forca);
@@ -155,6 +156,7 @@ public class Jogo implements Serializable{
     public void carregarJogo(String filename) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             // Deserialize the game state (example)
+        	nomeJogador = (String) ois.readObject();
             numTentativas = ois.readInt();
             palavra = (Palavra) ois.readObject();
 //            forca = (Forca) ois.readObject();
