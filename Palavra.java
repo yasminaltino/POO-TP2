@@ -20,8 +20,11 @@ public class Palavra implements Serializable{
     }
 
     public void atualizaLabelLetrasAdvinhadas(){
+    	
+     // Inicializa letrasAdvinhadas como uma grande sequência de '_', que marcam letras que ainda não foram descobertas
         this.letrasAdvinhadas = new ArrayList<>(Collections.nCopies(palavra.length(), '_'));
         
+     // Como espaços e hífens não são opções selecionavéis na interface (não são letras), mas ainda assim são caracteres válidos, revela-os
         for(int i = 0; i < palavra.length(); i++)
             if(palavra.charAt(i) == ' ') {
                 letrasAdvinhadas.set(i, ' ');
@@ -34,16 +37,25 @@ public class Palavra implements Serializable{
             
     }
     
+    // Sobreescreve o método toString() da classe Object para praticidade de imprimir as letras advinhadas
     @Override
     public String toString() {
-    	String output = "";
     	
-    	for (Character c : letrasAdvinhadas) {
-    		output += c;
-    		output += ' ';
-    	}
-    	
-    	return output;
+    	// Instancia objeto StringBuilder para auxiliar na construção da String de retorno do método
+        StringBuilder formatted = new StringBuilder();
+         
+        for (int i = 0; i < letrasAdvinhadas.size(); i++) {
+        	
+        	// Insere o caractere de indice i
+            formatted.append(String.format("%c", letrasAdvinhadas.get(i)));
+            
+            // Insere " " em seguida do caractere, exceto do último, para separá-los devidamente
+            if (i < letrasAdvinhadas.size() - 1)
+                formatted.append(" ");
+            
+        }
+        
+        return formatted.toString();
     }
     
     public int getNEspacos() {

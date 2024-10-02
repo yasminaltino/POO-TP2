@@ -260,6 +260,7 @@ public class InterfaceGrafica extends JFrame {
         botaoConfirmar.setFont(new Font("Tahoma", Font.BOLD, 15));
         botaoConfirmar.setBounds(100, 90, 180, 50);
         botaoConfirmar.addActionListener(new ActionListener() {
+        	
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Botão confirmar");
@@ -268,22 +269,27 @@ public class InterfaceGrafica extends JFrame {
                 palavra = campoEntrada.getText().toUpperCase();
                 
                 boolean hasInvalidCharacter = false;
-                for (int i = 0; i < palavra.length(); i++) {
-                	// Verifica se a palavra possui algum caracter invalido
+                
+             // Percorre a palavra em busca de algum caractere inválido
+                for (int i = 0; i < palavra.length(); i++) 
                 	if ((palavra.charAt(i) < 'A' || palavra.charAt(i) > 'Z') && palavra.charAt(i) != ' ' && palavra.charAt(i) != '-')
                 		hasInvalidCharacter = true;
-                }
                 
+             // Verifica se a palavra tem um comprimento válido ( >= 8)
                 if(palavra.length() < 8){
                     JOptionPane.showMessageDialog(null, "A palavra deve ter no mínimo 8 letras!", "", JOptionPane.ERROR_MESSAGE);
                     campoEntrada.setText("");
                     mostrarTelaEscolhaPalavra();
                 }
+                
+             // Verifica se a palavra apresentou algum caractere inválido
                 else if(hasInvalidCharacter) {
                 	JOptionPane.showMessageDialog(null, "A palavra deve conter somente letras, espaços ou hífens!", "", JOptionPane.ERROR_MESSAGE);
                     campoEntrada.setText("");
                     mostrarTelaEscolhaPalavra();
                 }
+                
+             // Se nenhuma irregularidade for detectada, prossegue com o jogo
                 else {
                     jogo.getPalavra().setPalavra(palavra);
                     jogo.getPalavra().atualizaLabelLetrasAdvinhadas();

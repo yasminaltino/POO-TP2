@@ -113,20 +113,34 @@ public class Jogo implements Serializable{
     }
 
     public String getLetrasEscolhidasFormatadas() {
+    	
+    	// Instancia objeto StringBuilder para auxiliar na construção da String de retorno do método
         StringBuilder formatted = new StringBuilder();
+         
         for (int i = 0; i < letrasEscolhidas.size(); i++) {
+        	
+        	// Insere o caractere de indice i
             formatted.append(String.format("%c", letrasEscolhidas.get(i)));
-            if (i < letrasEscolhidas.size() - 1) {
+            
+         // Insere ", " em seguida do caractere, exceto do último, para separá-los devidamente
+            if (i < letrasEscolhidas.size() - 1)
                 formatted.append(", ");
-            }
+            
         }
+        
         return formatted.toString();
     }
 
     public boolean adivinharLetra(char letra){
-        boolean achou = false;
+    //  Variável que controla o retorno da função
+    	boolean achou = false;
+        
+     // Percorre a String procurando as incidencias da letra escolhida pelo jogador
         for(int i = 0; i < palavra.getPalavra().length(); i++){
+        	
             if(palavra.getPalavra().charAt(i) == letra){
+            	
+            // Quando encontrada uma incidencia da letra, revela-a e atualiza o número de acertos 
                 palavra.getLetrasAdvinhadas().set(i, letra);
                 numAcertos++;
                 achou = true;
@@ -137,6 +151,7 @@ public class Jogo implements Serializable{
 
     public void salvarJogo(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+        	
             // Serialize game state
         	oos.writeObject(nomeJogador);
             oos.writeInt(numTentativas);
@@ -146,8 +161,12 @@ public class Jogo implements Serializable{
             oos.writeInt(numDerrotas);
             oos.writeInt(numAcertos);
             oos.writeObject(letrasEscolhidas);
+            
             System.out.println("Jogo salvo com sucesso.");
-        } catch (IOException e) {
+            
+        } 
+        
+        catch (IOException e) {
             System.out.println("Erro ao salvar o jogo: " + e.getMessage());
         }
     }
@@ -155,6 +174,7 @@ public class Jogo implements Serializable{
 
     public void carregarJogo(String filename) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+        	
             // Deserialize the game state (example)
         	nomeJogador = (String) ois.readObject();
             numTentativas = ois.readInt();
@@ -164,16 +184,31 @@ public class Jogo implements Serializable{
             numDerrotas = ois.readInt();
             numAcertos = ois.readInt();
             letrasEscolhidas = (ArrayList<Character>) ois.readObject();
-        } catch (FileNotFoundException e) {
+            
+        }
+        
+        catch (FileNotFoundException e) {
+        	
             // Handle file not found logic internally
             System.out.println("Nenhum jogo salvo encontrado. Iniciando um novo jogo.");
+            
             iniciarNovoJogo(); // Start a new game if the file is not found
+            
             return; // Exit the method if a new game is started
-        } catch (IOException e) {
+            
+        }
+        
+        catch (IOException e) {
+        	
             // Rethrow other I/O exceptions
             throw e;
-        } catch (ClassNotFoundException e) {
+            
+        }
+        
+        catch (ClassNotFoundException e) {
+        	
             throw new IOException("Erro ao carregar o jogo: classe não encontrada.", e);
+            
         }
     }
 }
