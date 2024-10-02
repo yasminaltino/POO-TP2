@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Palavra implements Serializable{
     private String palavra;
     private String tema;
+    private int nEspacos;
     private ArrayList<Character> letrasAdvinhadas;
 
     public Palavra() {
@@ -20,7 +21,35 @@ public class Palavra implements Serializable{
 
     public void atualizaLabelLetrasAdvinhadas(){
         this.letrasAdvinhadas = new ArrayList<>(Collections.nCopies(palavra.length(), '_'));
+        
+        for(int i = 0; i < palavra.length(); i++)
+            if(palavra.charAt(i) == ' ') {
+                letrasAdvinhadas.set(i, ' ');
+                nEspacos++;
+            }
     }
+    
+    @Override
+    public String toString() {
+    	String output = "";
+    	
+    	for (Character c : letrasAdvinhadas) {
+    		output += c;
+    		output += ' ';
+    	}
+    	
+    	return output;
+    }
+    
+    public int getNEspacos() {
+    	return nEspacos;
+    }
+    
+    /*
+    public void setNEspacos(int n) {
+    	this.nEspacos = n >= 0 ? n : 0;
+    }
+    */
 
     public String getPalavra() {
         return palavra;

@@ -201,7 +201,7 @@ public class InterfaceGrafica extends JFrame {
         painelQuadrado.setBorder(BorderFactory.createRaisedBevelBorder());
         painelQuadrado.setBounds(20,480,410,200);
 
-        letrasAdivinhadas = new JLabel("Palavra: " + jogo.getPalavra().getLetrasAdvinhadas().toString(), JLabel.CENTER);
+        letrasAdivinhadas = new JLabel("Palavra: " + jogo.getPalavra().toString(), JLabel.CENTER);
         letrasAdivinhadas.setFont(new Font("Tahoma", Font.BOLD,  18));
 
         dica = new JLabel("Dica: " + jogo.getPalavra().getTema(), JLabel.CENTER);
@@ -361,12 +361,12 @@ public class InterfaceGrafica extends JFrame {
         tentativasRestantes.setText("Tentativas restantes: " + jogo.getNumTentativas());
         atualizarImagem();
 
-        letrasAdivinhadas.setText("Palavra: " + jogo.getPalavra().getLetrasAdvinhadas().toString());
+        letrasAdivinhadas.setText("Palavra: " + jogo.getPalavra().toString());
 
-        if (jogo.getNumTentativas() == 0 || jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length() && !getVersus()) {
+        if (jogo.getNumTentativas() == 0 || jogo.getNumAcertos() == (jogo.getPalavra().getPalavra().length() - jogo.getPalavra().getNEspacos()) && !getVersus()) {
             // salvar dados do jogador sozinho aqui
             mostrarTelaFinal();
-        } else if (getVersus() && jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length() && getStatusVersus() == 1) {
+        } else if (getVersus() && jogo.getNumAcertos() == (jogo.getPalavra().getPalavra().length() - jogo.getPalavra().getNEspacos()) && getStatusVersus() == 1) {
             // salvar dados do jogador 1 aq
             Jogo tmp = jogo;
             jogo = jogadorUmDados;
