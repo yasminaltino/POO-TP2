@@ -27,6 +27,11 @@ public class Palavra implements Serializable{
                 letrasAdvinhadas.set(i, ' ');
                 nEspacos++;
             }
+            else if (palavra.charAt(i) == '-') {
+            	letrasAdvinhadas.set(i, '-');
+                nEspacos++;
+            }
+            
     }
     
     @Override

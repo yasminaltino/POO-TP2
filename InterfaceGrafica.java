@@ -266,11 +266,25 @@ public class InterfaceGrafica extends JFrame {
 
                 String palavra;
                 palavra = campoEntrada.getText().toUpperCase();
+                
+                boolean hasInvalidCharacter = false;
+                for (int i = 0; i < palavra.length(); i++) {
+                	// Verifica se a palavra possui algum caracter invalido
+                	if ((palavra.charAt(i) < 'A' || palavra.charAt(i) > 'Z') && palavra.charAt(i) != ' ' && palavra.charAt(i) != '-')
+                		hasInvalidCharacter = true;
+                }
+                
                 if(palavra.length() < 8){
                     JOptionPane.showMessageDialog(null, "A palavra deve ter no mínimo 8 letras!", "", JOptionPane.ERROR_MESSAGE);
                     campoEntrada.setText("");
                     mostrarTelaEscolhaPalavra();
-                }else{
+                }
+                else if(hasInvalidCharacter) {
+                	JOptionPane.showMessageDialog(null, "A palavra deve conter somente letras, espaços ou hífens!", "", JOptionPane.ERROR_MESSAGE);
+                    campoEntrada.setText("");
+                    mostrarTelaEscolhaPalavra();
+                }
+                else {
                     jogo.getPalavra().setPalavra(palavra);
                     jogo.getPalavra().atualizaLabelLetrasAdvinhadas();
                     mostrarTelaJogo();
