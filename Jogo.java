@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Random;
 
 public class Jogo implements Serializable{
     private int numTentativas;
@@ -135,9 +136,9 @@ public class Jogo implements Serializable{
     public void setNivelDificuldade(int dificuldade) {
         if(dificuldade == 1){
             this.nivelDificuldade = NivelDificuldade.FACIL;
-        }else if(dificuldade == 1){
-            this.nivelDificuldade = NivelDificuldade.MEDIO;
         }else if(dificuldade == 2){
+            this.nivelDificuldade = NivelDificuldade.MEDIO;
+        }else if(dificuldade == 3){
             this.nivelDificuldade = NivelDificuldade.DIFICIL;
         }else{
             this.nivelDificuldade = NivelDificuldade.VERSUS;
@@ -156,6 +157,7 @@ public class Jogo implements Serializable{
         sortearPalavra();
         setNumTentativas(6);
         letrasEscolhidas.clear();
+        nivelDificuldade = NivelDificuldade.FACIL;
         numAcertos = 0;
     }
 

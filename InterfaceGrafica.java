@@ -75,8 +75,8 @@ public class InterfaceGrafica extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("1 jogador");
-                setVersus(false);
-                setStatusVersus(1);
+                jogo.setVersus(false);
+                jogo.setStatusVersus(1);
                 mostrarTelaEntradaNome();
             }
         });
@@ -267,8 +267,8 @@ public class InterfaceGrafica extends JFrame {
 
         JLabel nivelDificuldade = new JLabel("Dificuldade: " + jogo.getNivelDificuldade(), JLabel.CENTER);
         nivelDificuldade.setFont(new Font("Tahoma", Font.BOLD,  15));
-        nivelDificuldade.setBounds(0, 200, 400, 30);
-        painelQuadrado.add(nivelDificuldade);
+        nivelDificuldade.setBounds(130, 440, 200, 30);
+        painelJogo.add(nivelDificuldade);
 
         painelQuadrado.add(letrasAdivinhadas);
         painelQuadrado.add(dica);
@@ -445,7 +445,7 @@ public class InterfaceGrafica extends JFrame {
             Jogo tmp = jogo;
             jogo = jogadorUmDados;
             jogadorUmDados = tmp;
-            setStatusVersus(jogo.getStatusVersus() + 1);
+            jogo.setStatusVersus(jogo.getStatusVersus() + 1);
             jogo.iniciarNovoJogo();
             mostrarTelaEntradaNome();
         }else if(jogo.getNumTentativas() == 0 && jogo.isVersus() && jogo.getStatusVersus() > 1 || jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length()){
@@ -592,21 +592,6 @@ public class InterfaceGrafica extends JFrame {
     }
 
 
-    public void setVersus(boolean versus){
-        this.versus = versus;
-    }
-
-    public boolean jogo.isVersus(){
-        return versus;
-    }
-
-    public int jogo.getStatusVersus() {
-        return statusVersus;
-    }
-
-    public void setStatusVersus(int statusVersus) {
-        this.statusVersus = statusVersus;
-    }
 
     // Método principal para executar a aplicação
     public static void main(String[] args) {
