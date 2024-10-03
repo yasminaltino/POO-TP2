@@ -153,10 +153,58 @@ public class Jogo implements Serializable{
     }
 
     public void iniciarNovoJogo(){
-        palavra = new Palavra("MELANCIA", "Frutas");
+        sortearPalavra();
         setNumTentativas(6);
         letrasEscolhidas.clear();
         numAcertos = 0;
+    }
+
+    public void sortearPalavra() {
+        Random rand = new Random();
+        String tema = "Error";
+        String stringPalavra = "Error";
+        int numTema = rand.nextInt(3);
+        int numPalavra = rand.nextInt(5);
+
+        System.out.println("Tema: " + numTema + " Palavra: " + numPalavra);
+
+
+        switch (numTema) {
+            case 0:
+                tema = "Frutas";
+                if (nivelDificuldade == NivelDificuldade.FACIL) {
+                    stringPalavra = frutasFacil[numPalavra].toUpperCase();
+                } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
+                    stringPalavra = frutasMedio[numPalavra].toUpperCase();
+                } else {
+                    stringPalavra = frutasDificil[numPalavra].toUpperCase();
+                }
+                break;
+            case 1:
+                tema = "Cores";
+                if (nivelDificuldade == NivelDificuldade.FACIL) {
+                    stringPalavra = coresFacil[numPalavra].toUpperCase();
+                } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
+                    stringPalavra = coresMedio[numPalavra].toUpperCase();
+                } else {
+                    stringPalavra = coresDificil[numPalavra].toUpperCase();
+                }
+                break;
+            case 2:
+                tema = "País";
+                if (nivelDificuldade == NivelDificuldade.FACIL) {
+                    stringPalavra = paisesFacil[numPalavra].toUpperCase();
+                } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
+                    stringPalavra = paisesMedio[numPalavra].toUpperCase();
+                } else {
+                    stringPalavra = paisesDificil[numPalavra].toUpperCase();
+
+                }
+                break;
+
+
+        }
+        palavra = new Palavra(stringPalavra, tema);
     }
 
     public String getLetrasEscolhidasFormatadas() {
