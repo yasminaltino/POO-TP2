@@ -25,8 +25,8 @@ public class InterfaceGrafica extends JFrame {
     private JLabel imageLabel;
     private Jogo jogo, jogadorUmDados;
     private int maxTentativas;
-    private boolean versus;
-    private int statusVersus;
+
+
 
     // Construtor da classee
     public InterfaceGrafica(Jogo jogo, Jogo jogador2) {
@@ -77,11 +77,13 @@ public class InterfaceGrafica extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("1 jogador");
-                setVersus(false);
-                setStatusVersus(1);
+                jogo.setVersus(false);
+                jogo.setStatusVersus(1);
                 mostrarTelaEntradaNome();
             }
         });
+
+
 
         JButton botao2jogadores = new JButton("2 jogadores");
         botao2jogadores.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -91,9 +93,11 @@ public class InterfaceGrafica extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("2 jogadores");
-                setVersus(true);
-                setStatusVersus(1);
+                jogo.setVersus(true);
+                jogo.setStatusVersus(1);
+                jogo.getPalavra().setTema("Customizado");
                 mostrarTelaEntradaNome();
+                jogo.setNivelDificuldade(4);
             }
         });
 
@@ -117,6 +121,56 @@ public class InterfaceGrafica extends JFrame {
             }
         });
 
+        JRadioButton botaoFacil = new JRadioButton("Fácil: ");
+        JRadioButton botaoMedio = new JRadioButton("Médio: ");
+        JRadioButton botaoDificil = new JRadioButton("Difícil: ");
+        botaoFacil.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botaoMedio.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botaoDificil.setFont(new Font("Tahoma", Font.BOLD, 15));
+        ButtonGroup botoesDificuldade = new ButtonGroup();
+//        botoesDificuldade.setSelected(botaoFacil.getModel(), true);
+        botaoFacil.setSelected(true);
+        botaoFacil.setBounds(620, 200, 180, 50);
+        botaoMedio.setBounds(620, 250, 180, 50);
+        botaoDificil.setBounds(620, 300, 180, 50);
+        botoesDificuldade.add(botaoFacil);
+        botoesDificuldade.add(botaoMedio);
+        botoesDificuldade.add(botaoDificil);
+        painelInicial.add(botaoFacil);
+        painelInicial.add(botaoMedio);
+        painelInicial.add(botaoDificil);
+
+        botaoFacil.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Fácil");
+                jogo.setNumTentativas(8);
+                maxTentativas = 8;
+                jogo.setNivelDificuldade(1);
+            }
+        });
+
+        botaoMedio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Médio");
+                jogo.setNumTentativas(7);
+                maxTentativas = 7;
+                jogo.setNivelDificuldade(2);
+            }
+        });
+
+        botaoDificil.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Difícil");
+                jogo.setNumTentativas(6);
+                maxTentativas = 6;
+                jogo.setNivelDificuldade(3);
+            }
+        });
+
+
         // Adiciona os componentes ao painel
         painelInicial.add(titulo);
         painelInicial.add(botao1jogador);
@@ -138,7 +192,7 @@ public class InterfaceGrafica extends JFrame {
         painelEntrada.setBounds(300, 300, 400, 300);
 
         JLabel labelEntrada = new JLabel();
-        if (!getVersus()) {
+        if (!jogo.isVersus()) {
             labelEntrada.setText("Digite o seu nome: ");
         }else{
             labelEntrada.setText("<html><div style='text-align: center;'> Digite o nome de quem irá <br> descobrir a palavra: </html>");
@@ -159,13 +213,13 @@ public class InterfaceGrafica extends JFrame {
         botaoConfirmar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.printf("Botão confirmar nome %d\n", getStatusVersus());
+                System.out.printf("Botão confirmar nome %d\n", jogo.getStatusVersus());
 
                 jogo.setNomeJogador(campoEntrada.getText());
 
-                if(getVersus() && getStatusVersus() == 1 || getStatusVersus() == 2){
+                if(jogo.isVersus() && jogo.getStatusVersus() == 1 || jogo.getStatusVersus() == 2){
                     mostrarTelaEscolhaPalavra();
-                } else if (!getVersus()) {
+                } else if (!jogo.isVersus()) {
                     mostrarTelaJogo();
                 }
             }
@@ -215,6 +269,11 @@ public class InterfaceGrafica extends JFrame {
 
         tentativasRestantes = new JLabel("Tentativas restantes: " + jogo.getNumTentativas(), JLabel.CENTER);
         tentativasRestantes.setFont(new Font("Tahoma", Font.BOLD,  15));
+
+        JLabel nivelDificuldade = new JLabel("Dificuldade: " + jogo.getNivelDificuldade(), JLabel.CENTER);
+        nivelDificuldade.setFont(new Font("Tahoma", Font.BOLD,  15));
+        nivelDificuldade.setBounds(0, 200, 400, 30);
+        painelQuadrado.add(nivelDificuldade);
 
         painelQuadrado.add(letrasAdivinhadas);
         painelQuadrado.add(dica);
@@ -383,18 +442,18 @@ public class InterfaceGrafica extends JFrame {
 
         letrasAdivinhadas.setText("Palavra: " + jogo.getPalavra().toString());
 
-        if (jogo.getNumTentativas() == 0 || jogo.getNumAcertos() == (jogo.getPalavra().getPalavra().length() - jogo.getPalavra().getNEspacos()) && !getVersus()) {
+        if (jogo.getNumTentativas() == 0 || jogo.getNumAcertos() == (jogo.getPalavra().getPalavra().length() - jogo.getPalavra().getNEspacos()) && !jogo.isVersus()) {
             // salvar dados do jogador sozinho aqui
             mostrarTelaFinal();
-        } else if (getVersus() && jogo.getNumAcertos() == (jogo.getPalavra().getPalavra().length() - jogo.getPalavra().getNEspacos()) && getStatusVersus() == 1) {
+        } else if (jogo.isVersus() && jogo.getNumAcertos() == (jogo.getPalavra().getPalavra().length() - jogo.getPalavra().getNEspacos()) && jogo.getStatusVersus() == 1) {
             // salvar dados do jogador 1 aq
             Jogo tmp = jogo;
             jogo = jogadorUmDados;
             jogadorUmDados = tmp;
-            setStatusVersus(getStatusVersus() + 1);
+            jogo.setStatusVersus(jogo.getStatusVersus() + 1);
             jogo.iniciarNovoJogo();
             mostrarTelaEntradaNome();
-        }else if(jogo.getNumTentativas() == 0 && getVersus() && getStatusVersus() > 1 || jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length()){
+        }else if(jogo.getNumTentativas() == 0 && jogo.isVersus() && jogo.getStatusVersus() > 1 || jogo.getNumAcertos() == jogo.getPalavra().getPalavra().length()){
             // salvar dados do jogador 2 aq
             mostrarTelaFinal();
         }
@@ -432,7 +491,7 @@ public class InterfaceGrafica extends JFrame {
             jogo.setNumDerrotas(jogo.getNumDerrotas() + 1);
         }
 
-        if(!getVersus()){
+        if(!jogo.isVersus()){
             painelFinal.add(resultado);
         }
 
@@ -474,7 +533,7 @@ public class InterfaceGrafica extends JFrame {
         // definindo bordas para o compoundBorder
         Border bevelBorder = new BevelBorder(BevelBorder.LOWERED);
         Border paddingBorder = new EmptyBorder(10, 10, 10, 10);
-        if(!getVersus()){
+        if(!jogo.isVersus()){
             labelEstatisticas = new JLabel("", JLabel.CENTER);
             labelEstatisticas.setFont(new Font("Tahoma", Font.BOLD, 18));
             labelEstatisticas.setBounds(0, 0, 250, 200);
@@ -488,7 +547,7 @@ public class InterfaceGrafica extends JFrame {
         }
 
 
-        if(getVersus()){
+        if(jogo.isVersus()){
             JLabel labelEstatisticas2 = new JLabel("", JLabel.CENTER);
             labelEstatisticas2.setFont(new Font("Tahoma", Font.BOLD,  18));
             labelEstatisticas2.setBounds(0,0, 250, 200);
@@ -537,22 +596,6 @@ public class InterfaceGrafica extends JFrame {
         imageLabel.setIcon(scaledIcon);
     }
 
-
-    public void setVersus(boolean versus){
-        this.versus = versus;
-    }
-
-    public boolean getVersus(){
-        return versus;
-    }
-
-    public int getStatusVersus() {
-        return statusVersus;
-    }
-
-    public void setStatusVersus(int statusVersus) {
-        this.statusVersus = statusVersus;
-    }
 
     // Método principal para executar a aplicação
     public static void main(String[] args) {

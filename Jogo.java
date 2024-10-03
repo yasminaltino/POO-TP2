@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Random;
 
 public class Jogo implements Serializable{
     private int numTentativas;
@@ -18,6 +19,23 @@ public class Jogo implements Serializable{
     private int numAcertos;
     private ArrayList<Character> letrasEscolhidas;
     private String nomeJogador;
+
+    private boolean versus;
+    private int statusVersus;
+    public enum NivelDificuldade {FACIL, MEDIO, DIFICIL, VERSUS};
+    private NivelDificuldade nivelDificuldade;
+
+    private String[] frutasFacil = {"Laranja", "Melancia", "Abacaxi", "Goiaba", "Banana"};
+    private String[] frutasMedio = {"Carambola", "Acerola", "Amora", "Pitanga", "Lichia"};
+    private String[] frutasDificil = {"Lichia", "Pitaya", "Siriguela", "Pequi", "Jenipapo"};
+    private String[] coresFacil = {"Vermelho", "Amarelo", "Laranja", "Cinza", "Branco"};
+    private String[] coresMedio = {"Violeta", "Dourado", "Cobre", "Esmeralda", "Caramelo"};
+    private String[] coresDificil = {"Magenta", "Ciano", "Fucsia", "Ocre", "Terracota"};
+    private String[] paisesFacil = {"Brasil", "Canada", "Mexico", "Franca", "China"};
+    private String[] paisesMedio = {"Dinamarca", "Finlandia", "Equador", "Taiwan", "Honduras"};
+    private String[] paisesDificil = {"Azerbaijao", "Kosovo", "Bangladesh", "Singapura", "Eslovaquia"};
+
+
 
     private static final long serialVersionUID = 1L;
 
@@ -97,6 +115,38 @@ public class Jogo implements Serializable{
         this.nomeJogador = nomeJogador;
     }
 
+    public boolean isVersus() {
+        return versus;
+    }
+
+    public void setVersus(boolean versus) {
+        this.versus = versus;
+    }
+
+    public int getStatusVersus() {
+        return statusVersus;
+    }
+
+    public void setStatusVersus(int statusVersus) {
+        this.statusVersus = statusVersus;
+    }
+
+    public NivelDificuldade getNivelDificuldade() {
+        return nivelDificuldade;
+    }
+
+    public void setNivelDificuldade(int dificuldade) {
+        if(dificuldade == 1){
+            this.nivelDificuldade = NivelDificuldade.FACIL;
+        }else if(dificuldade == 1){
+            this.nivelDificuldade = NivelDificuldade.MEDIO;
+        }else if(dificuldade == 2){
+            this.nivelDificuldade = NivelDificuldade.DIFICIL;
+        }else{
+            this.nivelDificuldade = NivelDificuldade.VERSUS;
+        }
+    }
+
     public ArrayList<Character> getLetrasEscolhidas() {
         return letrasEscolhidas;
     }
@@ -106,10 +156,58 @@ public class Jogo implements Serializable{
     }
 
     public void iniciarNovoJogo(){
-        palavra = new Palavra("MELANCIA", "Frutas");
+        sortearPalavra();
         setNumTentativas(6);
         letrasEscolhidas.clear();
         numAcertos = 0;
+    }
+
+    public void sortearPalavra() {
+        Random rand = new Random();
+        String tema = "Error";
+        String stringPalavra = "Error";
+        int numTema = rand.nextInt(3);
+        int numPalavra = rand.nextInt(5);
+
+        System.out.println("Tema: " + numTema + " Palavra: " + numPalavra);
+
+
+        switch (numTema) {
+            case 0:
+                tema = "Frutas";
+                if (nivelDificuldade == NivelDificuldade.FACIL) {
+                    stringPalavra = frutasFacil[numPalavra].toUpperCase();
+                } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
+                    stringPalavra = frutasMedio[numPalavra].toUpperCase();
+                } else {
+                    stringPalavra = frutasDificil[numPalavra].toUpperCase();
+                }
+                break;
+            case 1:
+                tema = "Cores";
+                if (nivelDificuldade == NivelDificuldade.FACIL) {
+                    stringPalavra = coresFacil[numPalavra].toUpperCase();
+                } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
+                    stringPalavra = coresMedio[numPalavra].toUpperCase();
+                } else {
+                    stringPalavra = coresDificil[numPalavra].toUpperCase();
+                }
+                break;
+            case 2:
+                tema = "País";
+                if (nivelDificuldade == NivelDificuldade.FACIL) {
+                    stringPalavra = paisesFacil[numPalavra].toUpperCase();
+                } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
+                    stringPalavra = paisesMedio[numPalavra].toUpperCase();
+                } else {
+                    stringPalavra = paisesDificil[numPalavra].toUpperCase();
+
+                }
+                break;
+
+
+        }
+        palavra = new Palavra(stringPalavra, tema);
     }
 
     public String getLetrasEscolhidasFormatadas() {
