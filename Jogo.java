@@ -19,6 +19,21 @@ public class Jogo implements Serializable{
     private ArrayList<Character> letrasEscolhidas;
     private String nomeJogador;
 
+    private boolean versus;
+    private int statusVersus;
+    public enum NivelDificuldade {FACIL, MEDIO, DIFICIL, VERSUS};
+    private NivelDificuldade nivelDificuldade;
+
+    private String[] frutasFacil = {"Laranja", "Melancia", "Abacaxi", "Goiaba", "Banana"};
+    private String[] frutasMedio = {"Carambola", "Acerola", "Amora", "Pitanga", "Lichia"};
+    private String[] frutasDificil = {"Lichia", "Pitaya", "Siriguela", "Pequi", "Jenipapo"};
+    private String[] coresFacil = {"Vermelho", "Amarelo", "Laranja", "Cinza", "Branco"};
+    private String[] coresMedio = {"Violeta", "Dourado", "Cobre", "Esmeralda", "Caramelo"};
+    private String[] coresDificil = {"Magenta", "Ciano", "Fucsia", "Ocre", "Terracota"};
+    private String[] paisesFacil = {"Brasil", "Canada", "Mexico", "Franca", "China"};
+    private String[] paisesMedio = {"Dinamarca", "Finlandia", "Equador", "Taiwan", "Honduras"};
+    private String[] paisesDificil = {"Azerbaijao", "Kosovo", "Bangladesh", "Singapura", "Eslovaquia"};
+
     private static final long serialVersionUID = 1L;
 
     public Jogo() {
@@ -95,6 +110,38 @@ public class Jogo implements Serializable{
 
     public void setNomeJogador(String nomeJogador) {
         this.nomeJogador = nomeJogador;
+    }
+    
+    public boolean isVersus() {
+        return versus;
+    }
+
+    public void setVersus(boolean versus) {
+        this.versus = versus;
+    }
+
+    public int getStatusVersus() {
+        return statusVersus;
+    }
+
+    public void setStatusVersus(int statusVersus) {
+        this.statusVersus = statusVersus;
+    }
+
+    public NivelDificuldade getNivelDificuldade() {
+        return nivelDificuldade;
+    }
+
+    public void setNivelDificuldade(int dificuldade) {
+        if(dificuldade == 1){
+            this.nivelDificuldade = NivelDificuldade.FACIL;
+        }else if(dificuldade == 1){
+            this.nivelDificuldade = NivelDificuldade.MEDIO;
+        }else if(dificuldade == 2){
+            this.nivelDificuldade = NivelDificuldade.DIFICIL;
+        }else{
+            this.nivelDificuldade = NivelDificuldade.VERSUS;
+        }
     }
 
     public ArrayList<Character> getLetrasEscolhidas() {
