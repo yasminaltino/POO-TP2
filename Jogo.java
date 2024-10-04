@@ -27,15 +27,15 @@ public class Jogo implements Serializable{
     private ArrayList<String> palavrasCorretas; //////////////
 
     //Diferentes palavras disponiveis para serem descobertas no jogo
-    private String[] frutasFacil = {"Laranja", "Melancia", "Abacaxi", "Goiaba", "Banana"};
-    private String[] frutasMedio = {"Carambola", "Acerola", "Amora", "Pitanga", "Lichia"};
-    private String[] frutasDificil = {"Lichia", "Pitaya", "Siriguela", "Pequi", "Jenipapo"};
-    private String[] coresFacil = {"Vermelho", "Amarelo", "Laranja", "Cinza", "Branco"};
-    private String[] coresMedio = {"Violeta", "Dourado", "Cobre", "Esmeralda", "Caramelo"};
-    private String[] coresDificil = {"Magenta", "Ciano", "Fucsia", "Ocre", "Terracota"};
-    private String[] paisesFacil = {"Brasil", "Canada", "Mexico", "Franca", "China"};
-    private String[] paisesMedio = {"Dinamarca", "Finlandia", "Equador", "Taiwan", "Honduras"};
-    private String[] paisesDificil = {"Azerbaijao", "Kosovo", "Bangladesh", "Singapura", "Eslovaquia"};
+    private static String[] frutasFacil = {"Laranja", "Melancia", "Abacaxi", "Goiaba", "Banana"};
+    private static String[] frutasMedio = {"Carambola", "Acerola", "Amora", "Pitanga", "Lichia"};
+    private static String[] frutasDificil = {"Lichia", "Pitaya", "Siriguela", "Pequi", "Jenipapo"};
+    private static String[] coresFacil = {"Vermelho", "Amarelo", "Laranja", "Cinza", "Branco"};
+    private static String[] coresMedio = {"Violeta", "Dourado", "Cobre", "Esmeralda", "Caramelo"};
+    private static String[] coresDificil = {"Magenta", "Ciano", "Fucsia", "Ocre", "Terracota"};
+    private static String[] paisesFacil = {"Brasil", "Canada", "Mexico", "Franca", "China"};
+    private static String[] paisesMedio = {"Dinamarca", "Finlandia", "Equador", "Taiwan", "Honduras"};
+    private static String[] paisesDificil = {"Azerbaijao", "Kosovo", "Bangladesh", "Singapura", "Eslovaquia"};
 
 //    private static final long serialVersionUID = 1L;
 
