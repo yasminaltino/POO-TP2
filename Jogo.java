@@ -1,7 +1,7 @@
+//Importacao de diferentes classes e pacotes que serao utilizados no codigo
 import java.io.*;
 import java.util.ArrayList;
 import java.io.Serializable;
-
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
@@ -10,21 +10,24 @@ import java.io.ObjectInputStream;
 import java.util.Random;
 
 public class Jogo implements Serializable{
+//atributos da classe Jogo
     private int numTentativas;
-    private Palavra palavra;
-    //    private Forca forca;
+    private Palavra palavra = new Palavra();
     private int numVitorias;
     private Boolean jogoSalvo = false;
     private int numDerrotas;
     private int numAcertos;
     private ArrayList<Character> letrasEscolhidas;
     private String nomeJogador;
-
     private boolean versus;
     private int statusVersus;
-    public enum NivelDificuldade {FACIL, MEDIO, DIFICIL, VERSUS};
+    public enum NivelDificuldade {FACIL, MEDIO, DIFICIL, VERSUS;};
     private NivelDificuldade nivelDificuldade;
 
+//Metodo responsavel por mostrar uma dica quando o jogador pedir
+    public void mostrarDica() {}
+
+//Diferentes palavras disponiveis para serem descobertas no jogo
     private String[] frutasFacil = {"Laranja", "Melancia", "Abacaxi", "Goiaba", "Banana"};
     private String[] frutasMedio = {"Carambola", "Acerola", "Amora", "Pitanga", "Lichia"};
     private String[] frutasDificil = {"Lichia", "Pitaya", "Siriguela", "Pequi", "Jenipapo"};
@@ -35,104 +38,43 @@ public class Jogo implements Serializable{
     private String[] paisesMedio = {"Dinamarca", "Finlandia", "Equador", "Taiwan", "Honduras"};
     private String[] paisesDificil = {"Azerbaijao", "Kosovo", "Bangladesh", "Singapura", "Eslovaquia"};
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
 
-    public Jogo() {
-
-//        forca = new Forca();
-        letrasEscolhidas = new ArrayList<>();
-    }
+//Construtores da classe Jogo
+    public Jogo() {letrasEscolhidas = new ArrayList<>();}
 
     public Jogo(int numTentativas, Palavra palavra, int numVitorias, int numDerrotas, int numAcertos, ArrayList<Character> letrasEscolhidas) {
         this.numTentativas = numTentativas;
         this.palavra = palavra;
-//        this.forca = forca;
         this.numVitorias = numVitorias;
         this.numDerrotas = numDerrotas;
         this.numAcertos = numAcertos;
         this.letrasEscolhidas = letrasEscolhidas;
     }
 
+//Getters e Setters para os atributos privados da classe Jogo
+
     public Boolean getJogoSalvo(){return jogoSalvo;}
-
     public void setJogoSalvo(Boolean jogoSalvo){this.jogoSalvo = jogoSalvo;}
-
-    public int getNumTentativas() {
-        return numTentativas;
-    }
-
-    public void setNumTentativas(int numTentativas) {
-        this.numTentativas = numTentativas;
-    }
-
-    public Palavra getPalavra() {
-        return palavra;
-    }
-
-    public void setPalavra(Palavra palavra) {
-        this.palavra = palavra;
-    }
-
-//    public Forca getForca() {s
-//        return forca;
-//    }
-
-//    public void setForca(Forca forca) {
-//        this.forca = forca;
-//    }
-
-    public int getNumVitorias() {
-        return numVitorias;
-    }
-
-    public void setNumVitorias(int numVitorias) {
-        this.numVitorias = numVitorias;
-    }
-
-    public int getNumAcertos() {
-        return numAcertos;
-    }
-
-    public void setNumAcertos(int numAcertos) {
-        this.numAcertos = numAcertos;
-    }
-
-    public int getNumDerrotas() {
-        return numDerrotas;
-    }
-
-    public void setNumDerrotas(int numDerrotas) {
-        this.numDerrotas = numDerrotas;
-    }
-
-    public String getNomeJogador() {
-        return nomeJogador;
-    }
-
-    public void setNomeJogador(String nomeJogador) {
-        this.nomeJogador = nomeJogador;
-    }
-    
-    public boolean isVersus() {
-        return versus;
-    }
-
-    public void setVersus(boolean versus) {
-        this.versus = versus;
-    }
-
-    public int getStatusVersus() {
-        return statusVersus;
-    }
-
-    public void setStatusVersus(int statusVersus) {
-        this.statusVersus = statusVersus;
-    }
-
-    public NivelDificuldade getNivelDificuldade() {
-        return nivelDificuldade;
-    }
-
+    public int getNumTentativas() {return numTentativas;}
+    public void setNumTentativas(int numTentativas) {this.numTentativas = numTentativas;}
+    public Palavra getPalavra() {return palavra;}
+    public void setPalavra(Palavra palavra) {this.palavra = palavra;}
+    public int getNumVitorias() {return numVitorias;}
+    public void setNumVitorias(int numVitorias) {this.numVitorias = numVitorias;}
+    public int getNumAcertos() {return numAcertos;}
+    public void setNumAcertos(int numAcertos) {this.numAcertos = numAcertos;}
+    public int getNumDerrotas() {return numDerrotas;}
+    public void setNumDerrotas(int numDerrotas) {this.numDerrotas = numDerrotas;}
+    public String getNomeJogador() {return nomeJogador;}
+    public void setNomeJogador(String nomeJogador) {this.nomeJogador = nomeJogador;}
+    public boolean isVersus() {return versus;}
+    public void setVersus(boolean versus) {this.versus = versus;}
+    public int getStatusVersus() {return statusVersus;}
+    public void setStatusVersus(int statusVersus) {this.statusVersus = statusVersus;}
+    public NivelDificuldade getNivelDificuldade() {return nivelDificuldade;}
+    public ArrayList<Character> getLetrasEscolhidas() {return letrasEscolhidas;}
+    public void setLetrasEscolhidas(ArrayList<Character> letrasEscolhidas) {this.letrasEscolhidas = letrasEscolhidas;}
     public void setNivelDificuldade(int dificuldade) {
         if(dificuldade == 1){
             this.nivelDificuldade = NivelDificuldade.FACIL;
@@ -145,22 +87,14 @@ public class Jogo implements Serializable{
         }
     }
 
-    public ArrayList<Character> getLetrasEscolhidas() {
-        return letrasEscolhidas;
-    }
-
-    public void setLetrasEscolhidas(ArrayList<Character> letrasEscolhidas) {
-        this.letrasEscolhidas = letrasEscolhidas;
-    }
-
+//Metodo que inicializa a palavra a ser adivinhada e as tentativas do jogador quando o jogo eh iniciado
     public void iniciarNovoJogo(){
         sortearPalavra();
-        setNumTentativas(6);
         letrasEscolhidas.clear();
-        nivelDificuldade = NivelDificuldade.FACIL;
         numAcertos = 0;
     }
 
+//Metodo responsavel por sortear a palavra que sera utilizada no jogo, das palavras disponiveis no banco de dados
     public void sortearPalavra() {
         Random rand = new Random();
         String tema = "Error";
@@ -170,36 +104,44 @@ public class Jogo implements Serializable{
 
         System.out.println("Tema: " + numTema + " Palavra: " + numPalavra);
 
-
         switch (numTema) {
             case 0:
                 tema = "Frutas";
                 if (nivelDificuldade == NivelDificuldade.FACIL) {
                     stringPalavra = frutasFacil[numPalavra].toUpperCase();
+                    setNumTentativas(8);
                 } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
                     stringPalavra = frutasMedio[numPalavra].toUpperCase();
+                    setNumTentativas(7);
                 } else {
                     stringPalavra = frutasDificil[numPalavra].toUpperCase();
+                    setNumTentativas(6);
                 }
                 break;
             case 1:
                 tema = "Cores";
                 if (nivelDificuldade == NivelDificuldade.FACIL) {
                     stringPalavra = coresFacil[numPalavra].toUpperCase();
+                    setNumTentativas(8);
                 } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
                     stringPalavra = coresMedio[numPalavra].toUpperCase();
+                    setNumTentativas(7);
                 } else {
                     stringPalavra = coresDificil[numPalavra].toUpperCase();
+                    setNumTentativas(6);
                 }
                 break;
             case 2:
                 tema = "País";
                 if (nivelDificuldade == NivelDificuldade.FACIL) {
                     stringPalavra = paisesFacil[numPalavra].toUpperCase();
+                    setNumTentativas(8);
                 } else if (nivelDificuldade == NivelDificuldade.MEDIO) {
                     stringPalavra = paisesMedio[numPalavra].toUpperCase();
+                    setNumTentativas(7);
                 } else {
                     stringPalavra = paisesDificil[numPalavra].toUpperCase();
+                    setNumTentativas(6);
 
                 }
                 break;

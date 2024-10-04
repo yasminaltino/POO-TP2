@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.sound.sampled.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
@@ -10,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.Font;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.BevelBorder;
+import java.io.File;
 import java.io.IOException;
 
 public class InterfaceGrafica extends JFrame {
@@ -26,11 +28,13 @@ public class InterfaceGrafica extends JFrame {
     private Jogo jogo, jogadorUmDados;
     private int maxTentativas;
 
+
     // Construtor da classee
     public InterfaceGrafica(Jogo jogo, Jogo jogador2) {
         this.jogo = jogo;
         this.jogadorUmDados = jogador2;
         this.maxTentativas = jogo.getNumTentativas();
+        jogo.setNivelDificuldade(1);
         // Configura o JFrame
         setTitle("Jogo da forca");
         setSize(1000, 760);
@@ -52,14 +56,29 @@ public class InterfaceGrafica extends JFrame {
         });
 
         // Inicializa os componentes
-        mostrarTelaInicial();
+        try {
+            mostrarTelaInicial();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedAudioFileException e) {
+            throw new RuntimeException(e);
+        } catch (LineUnavailableException e) {
+            throw new RuntimeException(e);
+        }
 
         setVisible(true);
     }
 
-    public void mostrarTelaInicial() {
+    public void mostrarTelaInicial() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         painelInicial = new JPanel();
         painelInicial.setLayout(null);
+
+        File file = new File("Toy Shopping - Jeremy Korpas.wav");
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioStream);
+
+        clip.start();
 
         JLabel titulo = new JLabel("Bem vindo ao Jogo da Forca!");
         titulo.setFont(new Font("Tahoma", Font.BOLD, 40));
@@ -77,6 +96,7 @@ public class InterfaceGrafica extends JFrame {
                 System.out.println("1 jogador");
                 jogo.setVersus(false);
                 jogo.setStatusVersus(1);
+                jogo.iniciarNovoJogo();
                 mostrarTelaEntradaNome();
             }
         });
@@ -91,7 +111,6 @@ public class InterfaceGrafica extends JFrame {
                 System.out.println("2 jogadores");
                 jogo.setVersus(true);
                 jogo.setStatusVersus(1);
-                jogo.getPalavra().setTema("Customizado");
                 mostrarTelaEntradaNome();
                 jogo.setNivelDificuldade(4);
             }
@@ -265,11 +284,35 @@ public class InterfaceGrafica extends JFrame {
         tentativasRestantes = new JLabel("Tentativas restantes: " + jogo.getNumTentativas(), JLabel.CENTER);
         tentativasRestantes.setFont(new Font("Tahoma", Font.BOLD,  15));
 
+        // RadioButtons para níveis de dificuldade
         JLabel nivelDificuldade = new JLabel("Dificuldade: " + jogo.getNivelDificuldade(), JLabel.CENTER);
         nivelDificuldade.setFont(new Font("Tahoma", Font.BOLD,  15));
         nivelDificuldade.setBounds(130, 440, 200, 30);
         painelJogo.add(nivelDificuldade);
 
+        // Botão para dica
+        JButton botaoDica = new JButton("Dica?");
+        botaoDica.setFont(new Font("Tahoma", Font.BOLD, 15));
+        botaoDica.setBounds(20, 440, 80, 30);
+        botaoDica.setBackground(Color.LIGHT_GRAY);
+        botaoDica.setForeground(Color.BLACK);
+        botaoDica.setFont(new Font("Arial", Font.BOLD, 14));
+        botaoDica.setBorder(BorderFactory.createEtchedBorder(Color.BLACK, Color.LIGHT_GRAY));
+        painelJogo.add(botaoDica);
+
+        botaoDica.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jogo.mostrarDica();
+                botaoDica.setEnabled(false);
+            }
+        });
+        if(jogo.getNivelDificuldade() == Jogo.NivelDificuldade.DIFICIL){
+            botaoDica.setVisible(false);
+        }
+
+
+        // Adiciona todos os elementos ao
         painelQuadrado.add(letrasAdivinhadas);
         painelQuadrado.add(dica);
         painelQuadrado.add(letrasEscolhidas);
@@ -346,6 +389,7 @@ public class InterfaceGrafica extends JFrame {
              // Se nenhuma irregularidade for detectada, prossegue com o jogo
                 else {
                     jogo.getPalavra().setPalavra(palavra);
+                    jogo.getPalavra().setTema("Customizado");
                     jogo.getPalavra().atualizaLabelLetrasAdvinhadas();
                     mostrarTelaJogo();
                 }
@@ -499,7 +543,15 @@ public class InterfaceGrafica extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 System.out.println("Botão recomeçar");
                 jogo.iniciarNovoJogo();
-                mostrarTelaInicial();
+                try {
+                    mostrarTelaInicial();
+                } catch (UnsupportedAudioFileException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (LineUnavailableException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -597,7 +649,6 @@ public class InterfaceGrafica extends JFrame {
     public static void main(String[] args) {
         Jogo jogo = new Jogo();
         Jogo jogador2 = new Jogo();
-        jogo.iniciarNovoJogo();
         // Garante que a GUI será criada no event-dispatching thread
         SwingUtilities.invokeLater(new Runnable() {
             @Override
