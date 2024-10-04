@@ -12,9 +12,9 @@ import java.util.Random;
 public class Jogo implements Serializable{
 //atributos da classe Jogo
     private int numTentativas;
-    private Palavra palavra = new Palavra();
+    private Palavra palavra;
     private int numVitorias;
-    private Boolean jogoSalvo = false;
+    private boolean jogoSalvo = false;
     private int numDerrotas;
     private int numAcertos;
     private ArrayList<Character> letrasEscolhidas;
@@ -24,10 +24,9 @@ public class Jogo implements Serializable{
     public enum NivelDificuldade {FACIL, MEDIO, DIFICIL, VERSUS;};
     private NivelDificuldade nivelDificuldade;
 
-//Metodo responsavel por mostrar uma dica quando o jogador pedir
-    public void mostrarDica() {}
+    private ArrayList<String> palavrasCorretas; //////////////
 
-//Diferentes palavras disponiveis para serem descobertas no jogo
+    //Diferentes palavras disponiveis para serem descobertas no jogo
     private String[] frutasFacil = {"Laranja", "Melancia", "Abacaxi", "Goiaba", "Banana"};
     private String[] frutasMedio = {"Carambola", "Acerola", "Amora", "Pitanga", "Lichia"};
     private String[] frutasDificil = {"Lichia", "Pitaya", "Siriguela", "Pequi", "Jenipapo"};
@@ -41,7 +40,7 @@ public class Jogo implements Serializable{
 //    private static final long serialVersionUID = 1L;
 
 //Construtores da classe Jogo
-    public Jogo() {letrasEscolhidas = new ArrayList<>();}
+    public Jogo() {letrasEscolhidas = new ArrayList<>(); palavra = new Palavra(); palavrasCorretas = new ArrayList<>();}
 
     public Jogo(int numTentativas, Palavra palavra, int numVitorias, int numDerrotas, int numAcertos, ArrayList<Character> letrasEscolhidas) {
         this.numTentativas = numTentativas;
@@ -50,6 +49,16 @@ public class Jogo implements Serializable{
         this.numDerrotas = numDerrotas;
         this.numAcertos = numAcertos;
         this.letrasEscolhidas = letrasEscolhidas;
+    }
+
+    // Método para adicionar uma palavra correta
+    public void adicionarPalavraCorreta(String palavra) {
+        palavrasCorretas.add(palavra);
+    }
+
+    // Método para obter as palavras corretas
+    public ArrayList<String> getPalavrasCorretas() {
+        return palavrasCorretas;
     }
 
 //Getters e Setters para os atributos privados da classe Jogo
@@ -94,6 +103,12 @@ public class Jogo implements Serializable{
         numAcertos = 0;
     }
 
+//Metodo que reinicia a quantidade de acertos e o vetor de letras escolhidas pelo jogador
+    public void resetarDados(){
+        letrasEscolhidas.clear();
+        numAcertos = 0;
+    }
+
 //Metodo responsavel por sortear a palavra que sera utilizada no jogo, das palavras disponiveis no banco de dados
     public void sortearPalavra() {
         Random rand = new Random();
@@ -101,6 +116,8 @@ public class Jogo implements Serializable{
         String stringPalavra = "Error";
         int numTema = rand.nextInt(3);
         int numPalavra = rand.nextInt(5);
+
+        //As palavras sao escolhidas com base num tema e na dificuldade
 
         System.out.println("Tema: " + numTema + " Palavra: " + numPalavra);
 
@@ -145,31 +162,29 @@ public class Jogo implements Serializable{
 
                 }
                 break;
-
-
         }
         palavra = new Palavra(stringPalavra, tema);
     }
 
+    //Metodo que obtem as letras que o jogador ja utilizou durante o jogo
     public String getLetrasEscolhidasFormatadas() {
     	
     	// Instancia objeto StringBuilder para auxiliar na construção da String de retorno do método
         StringBuilder formatted = new StringBuilder();
          
         for (int i = 0; i < letrasEscolhidas.size(); i++) {
-        	
-        	// Insere o caractere de indice i
+
+        // Insere o caractere de indice i
             formatted.append(String.format("%c", letrasEscolhidas.get(i)));
             
          // Insere ", " em seguida do caractere, exceto do último, para separá-los devidamente
             if (i < letrasEscolhidas.size() - 1)
                 formatted.append(", ");
-            
         }
-        
         return formatted.toString();
     }
 
+//Metodo que verifica se a letra inserida pelo jogador esta presente na palavra a ser adivinhada
     public boolean adivinharLetra(char letra){
     //  Variável que controla o retorno da função
     	boolean achou = false;
@@ -188,71 +203,68 @@ public class Jogo implements Serializable{
         return achou;
     }
 
+//Metodo responsavel por salvar um jogo em um arquivo, podendo entao ser continuado futuramente
     public void salvarJogo(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-        	
-            // Serialize game state
+
+            // Serializacao do estado do jogo
+            // Passamos todas as variaveis necessarias para dentro do arquivo
         	oos.writeObject(nomeJogador);
             oos.writeInt(numTentativas);
             oos.writeObject(palavra);
-//            oos.writeObject(forca);
             oos.writeInt(numVitorias);
             oos.writeInt(numDerrotas);
             oos.writeInt(numAcertos);
             oos.writeObject(letrasEscolhidas);
             
             System.out.println("Jogo salvo com sucesso.");
-            
-        } 
-        
+        }
+    //Catch para quando nao eh possivel salvar o jogo
         catch (IOException e) {
             System.out.println("Erro ao salvar o jogo: " + e.getMessage());
         }
     }
 
-
+//Metodo responsavel por carregar um jogo ja salvo em um arquivo, dando continuidade a ele
     public void carregarJogo(String filename) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-        	
-            // Deserialize the game state (example)
+
+            // Eh feito a leitura dos elementos presentes no arquivo e esses valores sao entao utilizados para recriar a partida
         	nomeJogador = (String) ois.readObject();
             numTentativas = ois.readInt();
             palavra = (Palavra) ois.readObject();
-//            forca = (Forca) ois.readObject();
             numVitorias = ois.readInt();
             numDerrotas = ois.readInt();
             numAcertos = ois.readInt();
             letrasEscolhidas = (ArrayList<Character>) ois.readObject();
-            
         }
-        
+        //Catch para quando nao eh possivel carregar o jogo
         catch (FileNotFoundException e) {
         	
-            // Handle file not found logic internally
             System.out.println("Nenhum jogo salvo encontrado. Iniciando um novo jogo.");
-            
-            iniciarNovoJogo(); // Start a new game if the file is not found
-            
-            return; // Exit the method if a new game is started
+            iniciarNovoJogo(); // Iniciar uma nova partida caso o jogo nao tenha sido encontrado
+            return; // Sair do metodo caso o novo jogo tenha se iniciado
             
         }
-        
+        //Catch para excecao I/O
         catch (IOException e) {
-        	
-            // Rethrow other I/O exceptions
             throw e;
-            
         }
-        
+
+        //Catch para o caso da classe nao ter sido encontrada
         catch (ClassNotFoundException e) {
-        	
             throw new IOException("Erro ao carregar o jogo: classe não encontrada.", e);
-            
         }
     }
+
+    public void mostrarDica(){
+        for(int i = 0; i < palavra.getPalavra().length(); i++){
+                if(!letrasEscolhidas.contains(palavra.getPalavra().charAt(i))){
+                    getPalavra().getLetrasAdvinhadas().set(i, palavra.getPalavra().charAt(i));
+                    numAcertos++;
+                    break;
+                }
+            }
+        }
+
 }
-
-
-
-
-
